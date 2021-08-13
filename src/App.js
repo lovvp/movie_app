@@ -1,45 +1,24 @@
 import React from "react";
-import axios from 'axios';
-import Movie from './Movie'
-import './App.css'
+import { HashRouter, Route } from 'react-router-dom';
+import About from './routes/About';
+import Home from './routes/Home';
+import Navigation from './components/Navigation';
+import Detail from './components/Detail'
 
 
-class App extends React.Component{
-  state = {
-    isLoading: true,
-    movies : []
-  };
 
-  getMovies = async() => {
-    const {data: {data: {movies}} } = await axios.get('https://yts-proxy.nomadcoders1.now.sh/list_movies.json?sort_by=rating');
-    console.log(movies);
-    this.setState({ movies,isLoading: false })
-    
-  }
-
-  componentDidMount() {
-    this.getMovies();
-  }
-  render() {
-    const { isLoading,movies } = this.state;
-    return <section className="container">{isLoading ? 
-      <div className="loader">
-        <span className="loader__text">Loading...</span>
-      </div> : (
-        <div className="movies">
-          {
-            movies.map(movie => {
-              console.log(movie);
-              return <Movie key={movie.id} id={movie.id} year={movie.year} title={movie.title} summary={movie.summary} poster={movie.medium_cover_image} genres={movie.genres}/>
-            })
-          }
-
-        </div>
-      )
-      
-    }</section>
-  }
+function App() {
+  //github에서 사용하기 router를 편하게 사용하기 위해서 HashRouter 를 씀
+  //BrowserRouter는 그대신 /#/ 같은 요상한거 안들어감
+  return (
+    <HashRouter>
+      {/* 렌더링할 Component가 들어가고 props가 들어간다. */}
+      <Navigation />
+      <Route path="/movie/:id" component={Detail}/>
+      <Route exact path ="/" component = {Home} />
+      <Route path="/about" component={About} />
+    </HashRouter>
+  )
 }
-
 
 export default App;
